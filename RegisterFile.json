@@ -1,0 +1,85 @@
+{
+  "MMCComponents": [
+    {
+      "Name": "Digitizer_0",
+      "Type": "WaveDump",
+      "Address": 2057,
+      "Version": "1.1.0.0",
+      "WordSize": 0,
+      "Channels": 32,
+      "nsamples": 128,
+      "UseDMA": false,
+      "Registers": [
+        {
+          "Name": "STATUS",
+          "Type": null,
+          "Address": 2058,
+          "Version": null,
+          "RegionSize": 1,
+          "Description": "",
+          "Category": "Undefined",
+          "Path": null
+        },
+        {
+          "Name": "INFO",
+          "Type": null,
+          "Address": 2059,
+          "Version": null,
+          "RegionSize": 1,
+          "Description": "",
+          "Category": "Undefined",
+          "Path": null
+        },
+        {
+          "Name": "CONFIG",
+          "Type": null,
+          "Address": 2060,
+          "Version": null,
+          "RegionSize": 1,
+          "Description": "",
+          "Category": "Undefined",
+          "Path": null
+        },
+        {
+          "Name": "ACQ_LEN",
+          "Type": null,
+          "Address": 2061,
+          "Version": null,
+          "RegionSize": 1,
+          "Description": "",
+          "Category": "Undefined",
+          "Path": null
+        }
+      ],
+      "Path": "/Digitizer_0"
+    }
+  ],
+  "Registers": [
+    {
+      "Name": "threshold",
+      "Type": "Register",
+      "Address": 2055,
+      "Version": "1.0.0.0",
+      "RegionSize": 1,
+      "Description": "",
+      "Category": "Undefined",
+      "Path": "/threshold"
+    },
+    {
+      "Name": "Delay",
+      "Type": "Register",
+      "Address": 2062,
+      "Version": "1.0.0.0",
+      "RegionSize": 1,
+      "Description": "",
+      "Category": "Undefined",
+      "Path": "/Delay"
+    }
+  ],
+  "Device": "DT5560",
+  "Project": "DT5560Digitizer",
+  "Magic": "0F54C30B",
+  "Version": null,
+  "FPGA": "xc7z030fbg676-2",
+  "BuildDate": "2025-11-15T19:42:13.5693168-03:00"
+}
