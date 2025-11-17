@@ -1,0 +1,72 @@
+2001  wget https://raw.githubusercontent.com/NuclearInstruments/SCISDK/refs/heads/master/scisdk-install.sh
+ 2002  chmod +x scisdk-install.sh
+ 2003  sudo ./scisdk-install.sh
+ 2004  ls scisdk-install.sh 
+ 2005  more scisdk-install.sh 
+ 2006  cd tools/src
+ 2007  cd /tools/src
+ 2008  pip install scisdk
+ 2009  SciSDK sdk = new SciSDK();
+ 2010  sudo apt-get install autoconf
+ 2011  sudo apt-get update
+ 2012  sudo apt-get install libtool pkg-config build-essential autoconf automake
+ 2013  sudo apt-get install libzmq3-dev
+ 2014  git clone https://github.com/NuclearInstruments/r5560_sdk.git
+ 2015  cd r5560_sdk/
+ 2016  ls
+ 2017  autoreconf  -f -i -Wall,no-obsolete
+ 2018  ls
+ 2019  ./configure
+ 2020  nproc 
+ 2021  make -j16
+ 2022  sudo cp libr5560.so.1.0.0 /usr/local/lib
+ 2023  ls libtool 
+ 2024  ls
+ 2025  cd autom4te.cache/
+ 2026  ls
+ 2027  cd ..
+ 2028  ls /usr/local/lib
+ 2029  sudo ldconfig
+ 2030  ls /usr/local/lib
+ 2031  ls
+ 2032  ls COPY_TO_BIN/
+ 2033  ls COPY_TO_BIN/v14/
+ 2034  cd R5560_SDKLib/
+ 2035  ls
+ 2036  autoreconf  -f -i -Wall,no-obsolete
+ 2037  ls libr5560.so.1.0.0
+ 2038  ls libr5560*
+ 2039  ls ../R5560_SDKApp
+ 2040  cd ..
+ 2041  more ni-release-linux.yaml
+ 2042  ls libr5560-lib-ubuntu.tar.gz
+ 2043  ls
+ 2044  ./install-sh 
+ 2045  more readme.md 
+ 2046  make
+ 2047  more Makefile
+ 2048  clear
+ 2049  ls
+ 2050  more compile_all_architecures.sh
+ 2051  ./compile_all_architecures.sh 
+ 2052  sudo su
+ 2053  ls
+ 2054  clear
+ 2055  ls
+ 2056  more ChangeLog 
+ 2057  more AUTHORS 
+ 2058  more aclocal.m4 
+ 2059  cler
+ 2060  clear
+ 2061  ls
+ 2062  more INSTALL 
+ 2063  ./configure && make && make install
+ 2064  ls
+ 2065  sudo su
+ 2066  ls
+ 2067  ls /usr/local/lib/
+ 2068  cd /usr/local/lib/
+ 2069  sudo ln -s libr5560.so.1.0.0 libr5560.so
+ 2070  sudo ldconfig
+ 2071  history
+ 2072  history > /home/x/DT5560/installLIBSci
