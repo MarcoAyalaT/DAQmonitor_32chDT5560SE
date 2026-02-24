@@ -9,24 +9,20 @@ from ctypes import (
     byref,
 )
 
-# ============================================================
-#  CARGA DE LA LIBRERÍA COMPARTIDA
-# ============================================================
+#  LIBRARIES ****
 
 LIB_PATH = "/usr/local/lib/libr5560.so"
 
 if not os.path.exists(LIB_PATH):
-    raise FileNotFoundError(f"ERROR: No se encuentra la librería {LIB_PATH}")
+    raise FileNotFoundError(f"ERROR: lib not found {LIB_PATH}")
 
 mydll = ctypes.cdll.LoadLibrary(LIB_PATH)
 print("Loaded Linux library:", LIB_PATH)
 
-# ============================================================
-#  DEFINICIÓN DE ESTRUCTURAS SEGÚN R5560_SDKLib.h
-# ============================================================
+
+#  array definition R5560_SDKLib.h *****
 
 # enum SOCKET_TYPE { LOW_LEVEL_TCP = 0 };
-# Lo representamos como un int normal
 SOCKET_TYPE = c_int
 
 class tZMQEndpoint(Structure):
@@ -49,9 +45,8 @@ class tR5560_Handle(Structure):
 
 tR5560_Handle_p = POINTER(tR5560_Handle)
 
-# ============================================================
-#  FIRMA DE FUNCIONES DEL SDK
-# ============================================================
+
+#  FUNCTIONS -******/*
 
 # int R5560_ConnectTCP(char *ipaddress, uint32_t port, tR5560_Handle *handle);
 mydll.R5560_ConnectTCP.argtypes = [
@@ -109,37 +104,35 @@ mydll.NI_DMA_Read.argtypes = [
 ]
 mydll.NI_DMA_Read.restype = c_int
 
-# ============================================================
-#  HELPERS DE ALTO NIVEL EN PYTHON
-# ============================================================
+# helpers *******
 
 def ConnectDevice(ip: str):
     """
-    Conecta al digitizer por TCP (puerto 8888).
-    Devuelve (err, handle) donde handle es tR5560_Handle.
+    TCP connection (port 8888).
+    we get (err, handle) where handle is tR5560_Handle.
     """
     handle = tR5560_Handle()
     ip_b   = ip.encode("ascii")
 
-    print(f"Conectando a {ip} ...")
+    print(f"Connecting to {ip} ...")
     err = mydll.R5560_ConnectTCP(ip_b, c_uint32(8888), byref(handle))
     if err == 0:
-        print("OK conectado.")
+        print("OK conected.")
     else:
-        print("ERROR al conectar, código:", err)
+        print("ERROR connecting:", err)
     return err, handle
 
 
 def CloseDevice(handle: tR5560_Handle):
     """
-    Cierra la conexión con el digitizer.
+    Close connection
     """
     return mydll.NI_CloseConnection(byref(handle))
 
 
 def WriteReg(value: int, address: int, handle: tR5560_Handle):
     """
-    Escribe un registro de 32 bits.
+    Register 32 bits
     """
     return mydll.NI_WriteReg(
         c_uint32(value),
@@ -150,7 +143,7 @@ def WriteReg(value: int, address: int, handle: tR5560_Handle):
 
 def ReadReg(address: int, handle: tR5560_Handle):
     """
-    Lee un registro de 32 bits y devuelve (err, value).
+    read register 32 bits with (err, value).
     """
     out = c_uint32(0)
     err = mydll.NI_ReadReg(
@@ -164,12 +157,12 @@ def ReadReg(address: int, handle: tR5560_Handle):
 def ReadFifo(buffer, count: int, data_addr: int, status_addr: int,
              bus_mode: int, timeout_ms: int, handle: tR5560_Handle):
     """
-    Lee desde el FIFO de datos.
+    Read from FIFO data
 
-    buffer:   debe ser (c_uint32 * N)()
-    count:    máximo de DWORDS a leer
-    data_addr: dirección del FIFO
-    status_addr: dirección del registro de estado del FIFO
+    buffer:   should be (c_uint32 * N)()
+    count:    max DWORDS to read
+    data_addr: dir FIFO
+    status_addr: dirción del registro de estado del FIFO
     bus_mode: 1 = BLOCKING, 2 = NON-BLOCKING (según firmware)
     timeout_ms: timeout de lectura
     """
@@ -185,4 +178,5 @@ def ReadFifo(buffer, count: int, data_addr: int, status_addr: int,
         byref(valid),
     )
     return err, valid.value
+
 
