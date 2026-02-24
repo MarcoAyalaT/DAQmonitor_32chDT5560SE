@@ -39,9 +39,8 @@ N_EVENTS = 100
 REFRESH_EVERY = max(1, N_EVENTS // 10)  # update each 10%
 
 
-# -------------------------------------------------------
-# Decode
-# -------------------------------------------------------
+# Decode ******
+
 def decode_event(event):
     wave_data = event[EVENT_HEADER_WORDS:]
     waves = np.zeros((CHANNELS, WAVE_LEN), dtype=np.uint16)
@@ -66,7 +65,7 @@ def decode_event(event):
     return waves
 
 
-# -------------------------------------------------------
+############################
 def create_histos():
     h = []
     for ch in range(CHANNELS):
@@ -79,8 +78,7 @@ def create_histos():
         h.append(H)
     return h
 
-
-# -------------------------------------------------------
+############################
 def draw_canvas(hlist):
     c = ROOT.TCanvas("c", "DT5560 - Persistence 32ch", 1600, 900)
     c.Divide(8, 4)
@@ -90,14 +88,14 @@ def draw_canvas(hlist):
     c.Update()
     return c
 
+############################
 
-# -------------------------------------------------------
 def main():
 
     # ROOT file
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     outname = f"acq_{timestamp}.root"
-    print(f"Archivo de salida: {outname}")
+    print(f"output: {outname}")
 
     # ROOT I/O
     ROOT.gStyle.SetPalette(ROOT.kBird)
@@ -115,12 +113,12 @@ def main():
     canvas = draw_canvas(h2)
 
     # connect
-    print("Conectando al DT5560...")
+    print("Conected to DT5560...")
     err, handle = ConnectDevice(IP_BOARD)
     if err != 0:
-        print("ERROR de conexión:", err)
+        print("ERROR conection:", err)
         return
-    print("Conectado correctamente")
+    print("successful Conected")
 
     # Config digitizer
     WriteReg(7900, RF.SCI_REG_threshold, handle)
@@ -135,14 +133,12 @@ def main():
         WriteReg(0 + (CH << 8), cfg_addr, handle)
         WriteReg(1 + (CH << 8), cfg_addr, handle)
 
-    print("Iniciando adquisición...")
+    print("Acq started")
 
-    # ---------------------------------------------------
-    # adquirir
-    # ---------------------------------------------------
+    # acquisition 
     for iev in range(N_EVENTS):
 
-        # progreso
+        # progress
         if iev % REFRESH_EVERY == 0:
             pct = 100.0 * iev / N_EVENTS
             print(f"[{iev}/{N_EVENTS}]  {pct:.1f}%")
@@ -168,42 +164,40 @@ def main():
 
         data = np.array(raw_words, dtype=np.uint32)
 
-        # Buscar header
+        # Header
         hdr = np.where(data == 0xFFFFFFFF)[0]
         if hdr.size == 0:
-            print("Evento sin header. Ignorado.")
+            print("Event without header. Ignored.")
             continue
 
         idx = hdr[0]
         if idx + EVENT_WORDS > len(data):
-            print("Evento incompleto. Ignorado.")
+            print("Event not completed. Ignored.")
             continue
 
         event = data[idx: idx + EVENT_WORDS]
 
-        # Decodificar
+        # Decode
         waves = decode_event(event)
         wave_array[:, :] = waves
 
-        # Llenar histos
+        # histos
         for ch in range(CHANNELS):
             for s in range(WAVE_LEN):
                 t = s * TS_NS
                 a = waves[ch, s]
                 h2[ch].Fill(t, a)
-
-        # Guardar en árbol
         tree.Fill()
 
-        # Refrescar canvas
+        # Canvas
         #if iev > 0 and (iev % REFRESH_EVERY == 0):
             #canvas.Modified()
             #canvas.Update()
             #ROOT.gSystem.ProcessEvents()
         if iev > 0 and (iev % REFRESH_EVERY == 0):
-            print(f"[REFRESH] Evento {iev}/{N_EVENTS}  ({100*iev/N_EVENTS:.1f}%)")
+            print(f"[REFRESH] Event {iev}/{N_EVENTS}  ({100*iev/N_EVENTS:.1f}%)")
 
-            # Redibujar cada histograma en su pad
+            # refresh canvas
             for ch in range(CHANNELS):
                 canvas.cd(ch + 1)
                 h2[ch].Draw("*")
@@ -214,13 +208,12 @@ def main():
 
 
     # ---------------------------------------------------
-    print("Guardando archivo ROOT...")
+    print("writing ROOT file")
     fout.Write()
     fout.Close()
 
     CloseDevice(handle)
-    print("Conexión cerrada.")
-    print("Terminado.")
+    print("conection closed.")
 
 
 if __name__ == "__main__":
